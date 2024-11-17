@@ -88,7 +88,7 @@ namespace EventManagament.Controllers
                     // Chuyển danh sách UserIds thành JSON
                     var userIdsJson = JsonConvert.SerializeObject(request.UserIds);
                     command.Parameters.AddWithValue("@SentTo", userIdsJson);
-
+                    command.Parameters.AddWithValue("@EventId", (object)request.EventId ?? DBNull.Value);
                     command.Parameters.AddWithValue("@IsRead", 0); // Mặc định là chưa xem
 
                     await command.ExecuteNonQueryAsync();

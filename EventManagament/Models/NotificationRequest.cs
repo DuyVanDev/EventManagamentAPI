@@ -10,6 +10,7 @@ namespace EventManagament.Models
     {
         public List<int> UserIds { get; set; } // Danh sách các UserId để gửi thông báo
         public string Message { get; set; }     // Nội dung thông báo
+        public int? EventId { get; set; }
     }
 
 }
