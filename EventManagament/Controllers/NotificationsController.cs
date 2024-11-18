@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace EventManagament.Controllers
 {
@@ -63,6 +64,11 @@ namespace EventManagament.Controllers
                     return BadRequest("Danh sách UserIds không hợp lệ.");
                 }
 
+                if (request.EventId == null)
+                {
+                    return BadRequest("EventId không được để trống.");
+                }
+
                 // Gửi thông báo qua SignalR cho từng user
                 foreach (var userId in request.UserIds)
                 {
@@ -82,13 +88,13 @@ namespace EventManagament.Controllers
                 {
                     await connection.OpenAsync();
 
-                    var command = new SqlCommand("INSERT INTO NotificationQueue (Message, SentTo, IsRead) VALUES (@Message, @SentTo, @IsRead)", connection);
+                    var command = new SqlCommand("INSERT INTO NotificationQueue (Message, SentTo, EventId, IsRead) VALUES (@Message, @SentTo,@EventId, @IsRead)", connection);
                     command.Parameters.AddWithValue("@Message", request.Message);
 
                     // Chuyển danh sách UserIds thành JSON
                     var userIdsJson = JsonConvert.SerializeObject(request.UserIds);
                     command.Parameters.AddWithValue("@SentTo", userIdsJson);
-                    command.Parameters.AddWithValue("@EventId", (object)request.EventId ?? DBNull.Value);
+                    command.Parameters.Add(new SqlParameter("@EventId", SqlDbType.Int) { Value = request.EventId ?? (object)DBNull.Value });
                     command.Parameters.AddWithValue("@IsRead", 0); // Mặc định là chưa xem
 
                     await command.ExecuteNonQueryAsync();
