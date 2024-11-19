@@ -1,6 +1,7 @@
 using CloudinaryDotNet;
 using EventManagament.Interface;
 using EventManagament.Models;
+using EventManagament.Service;
 using EventManagament.Services;
 using System.Security.Principal;
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSignalR();
 
 // Configure Swagger/OpenAPI
