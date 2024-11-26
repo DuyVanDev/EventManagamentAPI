@@ -27,4 +27,7 @@ RUN dotnet publish "EventManagament.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+ENV ConnectionStrings__DefaultConnection="Server=mssql-187928-0.cloudclusters.net,10123;Database=Event_Management;User Id=admin;Password=11102002aA;TrustServerCertificate=True;"
+
 ENTRYPOINT ["dotnet", "EventManagament.dll"]
