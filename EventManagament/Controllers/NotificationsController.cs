@@ -77,7 +77,6 @@ namespace EventManagament.Controllers
                     {
                         var connectionId = _connectionManager.GetConnectionId(userId.ToString());
                         await _hubContext.Clients.Client(connectionId).SendAsync("ReceiveMessage", request.Message);
-                        return Ok();
                     }
                 }
 
