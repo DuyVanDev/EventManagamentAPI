@@ -28,6 +28,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENV ConnectionStrings__DefaultConnection="Server=mssql-187928-0.cloudclusters.net,10123;Database=Event_Management;User Id=admin;Password=11102002aA;TrustServerCertificate=True;"
+ENV ConnectionStrings__DefaultConnection="Data Source=mssql-189501-0.cloudclusters.net,18906;Database=Event_Management;User Id=vanduy;Password=11102002aA;TrustServerCertificate=True;"
 
 ENTRYPOINT ["dotnet", "EventManagament.dll"]
