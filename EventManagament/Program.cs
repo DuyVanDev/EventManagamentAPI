@@ -1,4 +1,4 @@
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using EventManagament.Interface;
 using EventManagament.Models;
 using EventManagament.Service;
@@ -37,6 +37,16 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.MaxDepth = 64; // Tăng độ sâu của JSON nếu cần
+    });
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 2147483647; // 2GB
+    options.Limits.MaxResponseBufferSize = 2147483647; // Đảm bảo buffer response đủ lớn
+});
 
 builder.Services.AddSingleton(new Cloudinary(new Account(
     "dqpjoki72",
