@@ -3,6 +3,7 @@ using EventManagament.Interface;
 using EventManagament.Models;
 using EventManagament.Service;
 using EventManagament.Services;
+using System.Security.Principal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000") 
+            builder.WithOrigins("http://localhost:3000")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

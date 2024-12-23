@@ -3,7 +3,6 @@ using EventManagament.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json; // Thêm dòng này nếu chưa có
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EventManagament.Controllers
@@ -20,16 +19,41 @@ namespace EventManagament.Controllers
         }
 
         [HttpPost("execute")]
-        public async Task<IActionResult> ExecuteProcedureStream([FromBody] StoredProcedureRequest request)
+        public async Task<IActionResult> ExecuteProcedure([FromBody] StoredProcedureRequest request)
         {
-            var result = await _spService.ExecuteStoredProcedureAsync(request.ProcedureName, request.InputParameters);
-
-            if (result is string json)
+            if (request == null || string.IsNullOrEmpty(request.ProcedureName))
             {
-                var jsonBytes = Encoding.UTF8.GetBytes(json);
-                return new FileContentResult(jsonBytes, "application/json");
+                return BadRequest("Invalid request");
             }
 
+            // Call the service method, passing only input parameters
+            var result = await _spService.ExecuteStoredProcedureAsync(
+                request.ProcedureName,
+                request.InputParameters
+            );
+
+            // Check if the result is a Dictionary
+            if (result is IDictionary<string, object> resultDict && resultDict.ContainsKey("ReturnMess"))
+            {
+                var returnMess = resultDict["ReturnMess"]?.ToString();
+
+                if (!string.IsNullOrEmpty(returnMess))
+                {
+                    try
+                    {
+                        // Try to parse ReturnMess as JSON
+                        var parsedReturnMess = JsonConvert.DeserializeObject(returnMess);
+                        return Ok(parsedReturnMess);
+                    }
+                    catch (JsonException)
+                    {
+                        // If parsing fails, return the raw ReturnMess
+                        return Ok(new { ReturnMess = returnMess });
+                    }
+                }
+            }
+
+            // If result is not a dictionary or ReturnMess is missing, return the result as is
             return Ok(result);
         }
     }
